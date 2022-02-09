@@ -1,6 +1,8 @@
+from typing import Dict, Set
+
 from fastapi import FastAPI
 
-from typing import Dict, Set
+from models import Student
 
 app = FastAPI()
 
@@ -14,8 +16,16 @@ def hello() -> str:
 
 
 @app.get("/info")
-def info() -> Dict[str, Set[str]]:
-    return {"info": {"information page"}}
+def info(limit: int = 1, score: int = 90) -> Dict[str, str]:
+    if score > 90:
+        return {"info": f"{limit} records with a score above 90 from the database"}
+    else:
+        return {"info": f"{limit} records from the database"}
+
+
+@app.post("/info")
+def create(request: Student) -> Dict[str, str]:
+    return {"record": f"New record is created with {request.name}"}
 
 
 @app.get("/info/{name}")

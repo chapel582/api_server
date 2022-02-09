@@ -44,5 +44,43 @@ Once activated, you can deactivate your python virtual environment at any time w
 	
 	deactivate
 
+# Running postgres
+
+# Python Black
+Python black is our auto-formatter. In the event that the standard formatting is obviously less readable,
+you can turn off formatting for a block of code in the following way.
+
+    # fmt: off
+    np.array(
+        [
+            [1, 0, 0, 0],
+            [0, -1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, -1],
+        ]
+    )
+    # fmt: on
+
+You can alter black's configuration in the pyproject.toml file.
+
+# Flake8
+Resolve all flake8 errors and warnings before submitting your pull request. If the particular flake8 suggestion is obviously worse,
+You can disable a particular error for a line with a comment starting with "noqa". For example, if error F401 should be ignored...
+
+    # noqa: F401
+
+You can alter flake8's configuration in the .flake8 file.
+
+# mypy
+Mypy assists with static type analysis. If you must write code the violates static type analysis, you can disable mypy with the following
+comment
+
+    # type: ignore
+
+You can alter mypy's configuration in the mypy.ini file.
+
+More info here:
+https://mypy.readthedocs.io/en/stable/index.html
+
 # Making changes to requirements.txt
 When you make changes to requirements.txt, be sure to make the corresponding changes to .pre-commit-config.yaml

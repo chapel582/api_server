@@ -1,0 +1,28 @@
+[flake8]
+ignore = 
+	# E203 forces all colons to not have a space in front of them.
+	# however, this is not PEP-8 compliant for list splices, and conflicts with black's formatting of list splicing
+	E203,
+	# E501 checks for lines that are too long. this lets black enforce the line length instead
+	E501,
+	# W503 enforces where a binary operator appears in multi-line expressions. Flake8's recommendation currently conflicts with black's
+	W503
+max-line-length = 88
+select = 
+	# B are "bugbear" codes, and attempt to catch some bugs
+	B,
+	# E are "error" level codes from pycodestyle
+	E,
+	# F are pyflake errors
+	F,
+	# W are "warning" level codes from pycodestyle
+	W,
+	# T4 codes are reserved for type errors
+	T4,
+	# B9 are bugbear's "opinionated" codes
+	B9
+exclude = 
+	# No need to traverse our git directory
+    .git,
+    # There's no value in checking cache directories
+    __pycache__

@@ -1,0 +1,5 @@
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+# exclude generated code from auto formatting
+exclude = 'python_client'
