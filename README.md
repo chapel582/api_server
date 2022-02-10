@@ -98,6 +98,9 @@ When you make changes to requirements.txt, be sure to make the corresponding cha
 Be sure to write an upgrade and downgrade sql script for the database. Be sure to also update the create script that 
 generates a valid DB from scratch.
 
+The create script is make.sql
+The clean script is clean.sql
+
 # Notes
 ## Python Black
 Python black is our auto-formatter. In the event that the standard formatting is obviously less readable,
