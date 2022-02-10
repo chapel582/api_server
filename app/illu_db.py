@@ -25,12 +25,16 @@ def create_org(name: str) -> Dict[str, Any]:
         dictionary containing org column names and values
     """
     db: Postgres = init_db()
-    result: Dict[str, Any] = {}
+    # result: Dict[str, Any] = {}
     with db.get_cursor() as cursor:
-        params: Dict[str, str] = {"org_name": name}
-        cursor.run("INSERT INTO my_schema.organization VALUES(%(org_name)s)", params)
+        cursor.run(
+            "INSERT INTO my_schema.organization(org_name) VALUES(%(org_name)s)",
+            org_name=name,
+        )
         result = cursor.one(
-            "SELECT * FROM my_schema.organization WHERE org_name=%(org_name)s", params
+            "SELECT * FROM my_schema.organization WHERE org_name=%(org_name)s",
+            org_name=name,
         )
 
+    print(result)
     return result

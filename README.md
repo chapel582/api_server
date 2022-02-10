@@ -72,11 +72,13 @@ Once activated, you can deactivate your python virtual environment at any time w
 	
 	deactivate
 
-# How to make a new database
+# How to make a new database for dev testing
 If you need to start your database from scratch for testing, you can do the following
 
-	F:\GitHub\Illu\api_server\database>psql -h localhost -p 5432 -U postgres  -f clean.sql
-	F:\GitHub\Illu\api_server\database>psql -h localhost -p 5432 -U postgres  -f make.sql
+	psql -h localhost -p 5432 -U postgres  -f clean.sql
+	psql -h localhost -p 5432 -U postgres  -f make.sql
+
+This assumes that your postgres db is running on the default port (5432).
 
 # Developer Requirements before merging to main dev branch
 ## When making changes to requirements
