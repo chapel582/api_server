@@ -84,6 +84,12 @@ Once activated, you can deactivate your python virtual environment at any time w
 	
 	deactivate
 
+# How to make a new database
+If you need to start your database from scratch for testing, you can do the following
+
+	psql -U postgres -f clean.sql
+	psql -U postgres -f make.sql
+
 # Developer Requirements before merging to main dev branch
 ## When making changes to requirements
 When you make changes to requirements.txt, be sure to make the corresponding changes to .pre-commit-config.yaml
