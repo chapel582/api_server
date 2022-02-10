@@ -1,5 +1,7 @@
 CREATE DATABASE illu_db;
 
+\c illu_db;
+
 CREATE SCHEMA my_schema;
 
 CREATE TABLE my_schema.organization(

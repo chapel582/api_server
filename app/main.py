@@ -1,10 +1,21 @@
 from typing import Dict, Set
 
 from fastapi import FastAPI
+from dotenv import load_dotenv
 
-from models import Student
+from illu_db import init_db
+from illu_models import Student
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+async def startup() -> None:  # pragma no cover
+    """
+    Setup Postgres DB connection
+    """
+    load_dotenv()
+    init_db()
 
 
 @app.get("/")

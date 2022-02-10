@@ -44,6 +44,9 @@ On a Windows machine, the path to the bin directory will look something like
 	
 	C:\Program Files\PostgreSQL\14\bin
 
+## Configuring setup script
+On Windows, configure the setup.bat file with the appropriate paths.
+
 # Everytime setup
 ## Activating a python virtual environment
 	/path/to/venv/Scripts/activate
@@ -52,23 +55,8 @@ For example
 	
 	./api_server_venv/Scripts/activate
 
-## mypy path setup
-Before committing, set your mypy path with the following (assuming that the repository is the current working directory)
-
-Windows
-
-	set MYPYPATH=<path_to_app_dir>
-
-Other shells
-
-	export MYPYPATH=<path_to_app_dir>
-
-
-For example, on my Windows machine, I use this to set the MYPYPATH
-
-	F:\GitHub\Illu\api_server\app
-
-You will have to do this each time you open your terminal (or you can set up your shell to set this each time).
+## run setup
+Run the setup script (setup.bat on Windows).
 
 ## Running postgres
 Before running database or api tests, you will need to start postgres. You can start running postgres with the command
@@ -87,8 +75,8 @@ Once activated, you can deactivate your python virtual environment at any time w
 # How to make a new database
 If you need to start your database from scratch for testing, you can do the following
 
-	psql -U postgres -f clean.sql
-	psql -U postgres -f make.sql
+	F:\GitHub\Illu\api_server\database>psql -h localhost -p 5432 -U postgres  -f clean.sql
+	F:\GitHub\Illu\api_server\database>psql -h localhost -p 5432 -U postgres  -f make.sql
 
 # Developer Requirements before merging to main dev branch
 ## When making changes to requirements
@@ -102,6 +90,9 @@ The create script is make.sql
 The clean script is clean.sql
 
 # Notes
+## Running the server
+	uvicorn --app-dir .\app main:app --reload
+
 ## Python Black
 Python black is our auto-formatter. In the event that the standard formatting is obviously less readable,
 you can turn off formatting for a block of code in the following way.
