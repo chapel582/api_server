@@ -124,7 +124,11 @@ comment
 
     # type: ignore
 
-You can alter mypy's configuration in the mypy.ini file.
+You can alter mypy's configuration in the mypy.ini file. This can be helpful if you would like an import of a certain 
+package to skip import checks everywhere.
 
 More info here:
 https://mypy.readthedocs.io/en/stable/index.html
+
+More info on ignoring specific imports here:
+https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-library-stubs-or-py-typed-marker
