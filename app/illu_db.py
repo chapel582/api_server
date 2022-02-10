@@ -34,7 +34,7 @@ def create_org(name: str) -> Dict[str, Any]:
         result = cursor.one(
             "SELECT * FROM my_schema.organization WHERE org_name=%(org_name)s",
             org_name=name,
+            back_as=dict,
         )
 
-    print(result)
     return result
