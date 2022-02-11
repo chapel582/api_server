@@ -23,6 +23,8 @@ def create_org(name: str) -> Tuple[bool, Dict[str, Any]]:
         The name of org to create
 
     returns:
+        Tuple containing...
+        boolean indicating success or failure of insertion and selection
         dictionary containing org column names and values
     """
     db: Postgres = init_db()
@@ -99,41 +101,44 @@ def create_user(
     success: bool = False
     result: Dict[str, Any] = {}
     with db.get_cursor() as cursor:
-        cursor.run(
-            """
-                INSERT INTO my_schema.illu_user(
-                    phone_prefix, phone, user_name, pw_hash, jwt, org_id
-                )
-                VALUES(
-                    %(phone_prefix)s,
-                    %(phone)s,
-                    %(user_name)s,
-                    %(pw_hash)s,
-                    %(jwt)s,
-                    %(org_id)s
-                )
-            """,
-            phone_prefix=phone_prefix,
-            phone=phone,
-            user_name=user_name,
-            pw_hash=pw_hash,
-            jwt=jwt,
-            org_id=org_id,
-        )
-        result = cursor.one(
-            """
-                SELECT
-                    id, phone_prefix, phone, user_name, org_id
-                FROM
-                    my_schema.illu_user
-                WHERE
-                    phone_prefix=%(phone_prefix)s AND phone=%(phone)s
-            """,
-            phone_prefix=phone_prefix,
-            phone=phone,
-            back_as=dict,
-        )
-        success = True
+        try:
+            cursor.run(
+                """
+                    INSERT INTO my_schema.illu_user(
+                        phone_prefix, phone, user_name, pw_hash, jwt, org_id
+                    )
+                    VALUES(
+                        %(phone_prefix)s,
+                        %(phone)s,
+                        %(user_name)s,
+                        %(pw_hash)s,
+                        %(jwt)s,
+                        %(org_id)s
+                    )
+                """,
+                phone_prefix=phone_prefix,
+                phone=phone,
+                user_name=user_name,
+                pw_hash=pw_hash,
+                jwt=jwt,
+                org_id=org_id,
+            )
+            result = cursor.one(
+                """
+                    SELECT
+                        id, phone_prefix, phone, user_name, org_id
+                    FROM
+                        my_schema.illu_user
+                    WHERE
+                        phone_prefix=%(phone_prefix)s AND phone=%(phone)s
+                """,
+                phone_prefix=phone_prefix,
+                phone=phone,
+                back_as=dict,
+            )
+            success = True
+        except UniqueViolation:
+            pass
 
     return success, result
 

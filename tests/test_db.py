@@ -4,11 +4,6 @@ import illu_db
 
 illu_db.init_db()
 
-# TODO: test inserting already existing user
-# TODO: create user test
-# TODO: delete user test
-# TODO: create a user with an org
-# TODO: create a user with a jwt
 # TODO: test against sql injection
 
 
@@ -25,7 +20,7 @@ def test_create_org():
         illu_db.delete_org(name)
 
 
-def test_insert_already_exist_org():
+def test_create_created_org():
     name: str = "test already exist org"
     try:
         success: bool
@@ -66,58 +61,146 @@ def test_delete_deleted_org():
     assert success
 
 
+class CommonUserData:
+    phone_prefix: str
+    phone: str
+    user_name: str
+    pw_hash: str
+
+    def __init__(self, user_name):
+        self.phone_prefix = "+1"
+        self.phone = "1234567"
+        self.user_name = user_name
+        self.pw_hash = "fakehash"
+
+
+def check_created_user(
+    success: bool, user_data: CommonUserData, created_user_data: Dict[str, Any]
+):
+    assert success
+    assert not (created_user_data["id"] is None)
+    assert created_user_data["phone_prefix"] == user_data.phone_prefix
+    assert created_user_data["phone"] == user_data.phone
+    assert created_user_data["user_name"] == user_data.user_name
+
+
 def test_create_user():
-    phone_prefix: str = "+1"
-    phone: str = "1234567"
-    user_name: str = "test create user"
-    pw_hash: str = "fakehash"
+    user_data: CommonUserData = CommonUserData("test create user")
 
     try:
         success: bool
         result: Dict[str, Any]
         success, result = illu_db.create_user(
-            phone_prefix=phone_prefix, phone=phone, user_name=user_name, pw_hash=pw_hash
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+        )
+        check_created_user(success, user_data, result)
+    finally:
+        illu_db.delete_user(user_data.phone_prefix, user_data.phone)
+
+
+def test_create_created_user():
+    user_data: CommonUserData = CommonUserData("test create created user")
+
+    try:
+        success: bool
+        result: Dict[str, Any]
+        success, result = illu_db.create_user(
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+        )
+        check_created_user(success, user_data, result)
+
+        success, result = illu_db.create_user(
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+        )
+        assert not success
+    finally:
+        illu_db.delete_user(user_data.phone_prefix, user_data.phone)
+
+
+def test_create_user_jwt():
+    user_data: CommonUserData = CommonUserData("test create user with jwt")
+
+    try:
+        success: bool
+        result: Dict[str, Any]
+        success, result = illu_db.create_user(
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+            jwt="fakejwt",
+        )
+        check_created_user(success, user_data, result)
+    finally:
+        illu_db.delete_user(user_data.phone_prefix, user_data.phone)
+
+
+def test_create_user_org_id():
+    user_data: CommonUserData = CommonUserData("test create user with org_id")
+
+    org_name: str = "create user with org id org"
+    try:
+        org_created: bool
+        org_data: Dict[str, Any]
+        org_created, org_data = illu_db.create_org(org_name)
+        assert org_created
+
+        user_created: bool
+        user_data: Dict[str, Any]
+        user_created, created_user_data = illu_db.create_user(
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+            org_id=org_data["id"],
         )
 
-        assert success
-        assert not (result.get("id") is None)
-        assert result["phone_prefix"] == phone_prefix
-        assert result["phone"] == phone
-        assert result["user_name"] == user_name
+        check_created_user(user_created, user_data, created_user_data)
+        assert created_user_data["org_id"] == org_data["id"]
     finally:
-        illu_db.delete_user(phone_prefix, phone)
+        illu_db.delete_user(user_data.phone_prefix, user_data.phone)
+        illu_db.delete_org(org_name)
 
 
 def test_delete_user():
-    phone_prefix: str = "+1"
-    phone: str = "1234567"
-    user_name: str = "test delete user"
-    pw_hash: str = "fakehash"
+    user_data = CommonUserData("test delete user")
 
     success: bool
     success, _ = illu_db.create_user(
-        phone_prefix=phone_prefix, phone=phone, user_name=user_name, pw_hash=pw_hash
+        phone_prefix=user_data.phone_prefix,
+        phone=user_data.phone,
+        user_name=user_data.user_name,
+        pw_hash=user_data.pw_hash,
     )
     assert success
 
-    success = illu_db.delete_user(phone_prefix, phone)
+    success = illu_db.delete_user(user_data.phone_prefix, user_data.phone)
     assert success
 
 
 def test_delete_deleted_user():
-    phone_prefix: str = "+1"
-    phone: str = "1234567"
-    user_name: str = "test delete deleted user"
-    pw_hash: str = "fakehash"
+    user_data = CommonUserData("test delete deleted user")
 
     success: bool
     success, _ = illu_db.create_user(
-        phone_prefix=phone_prefix, phone=phone, user_name=user_name, pw_hash=pw_hash
+        phone_prefix=user_data.phone_prefix,
+        phone=user_data.phone,
+        user_name=user_data.user_name,
+        pw_hash=user_data.pw_hash,
     )
     assert success
 
-    success = illu_db.delete_user(phone_prefix, phone)
+    success = illu_db.delete_user(user_data.phone_prefix, user_data.phone)
     assert success
 
-    success = illu_db.delete_user(phone_prefix, phone)
+    success = illu_db.delete_user(user_data.phone_prefix, user_data.phone)
     assert success
