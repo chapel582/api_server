@@ -144,7 +144,12 @@ def delete_user(phone_prefix: str, phone: str) -> bool:
     success: bool = False
     with db.get_cursor() as cursor:
         cursor.run(
-            "DELETE FROM my_schema.illu_user WHERE phone_prefix=%(phone_prefix)s AND phone=%(phone)s",
+            """
+                DELETE FROM
+                    my_schema.illu_user
+                WHERE
+                    phone_prefix=%(phone_prefix)s AND phone=%(phone)s
+            """,
             phone_prefix=phone_prefix,
             phone=phone,
         )
