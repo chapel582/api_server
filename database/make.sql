@@ -15,9 +15,8 @@ CREATE TABLE my_schema.illu_user(
     phone character varying(100) NOT NULL,
     UNIQUE(phone_prefix, phone),
     user_name character varying(100) NOT NULL,
-    pwhash character varying(256) NOT NULL,
+    pw_hash character varying(256) NOT NULL,
     jwt character varying(512),
-    user_role bigint,
     org_id bigint,
     CONSTRAINT fk_org 
         FOREIGN KEY(org_id)
