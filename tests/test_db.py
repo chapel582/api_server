@@ -8,6 +8,9 @@ illu_db.init_db()
 
 
 def test_create_org():
+    """
+    tests creating a new organization
+    """
     name: str = "test create org"
     try:
         success: bool
@@ -21,6 +24,10 @@ def test_create_org():
 
 
 def test_create_created_org():
+    """
+    tests creating an org that is already created.
+    The second creation should fail.
+    """
     name: str = "test already exist org"
     try:
         success: bool
@@ -38,6 +45,9 @@ def test_create_created_org():
 
 
 def test_delete_org():
+    """
+    tests deleting an existing org
+    """
     name: str = "test delete org"
 
     success: bool = False
@@ -50,6 +60,10 @@ def test_delete_org():
 
 
 def test_delete_deleted_org():
+    """
+    tests deleting an already deleted organization
+    The second deletion should effectively be a no op
+    """
     name: str = "test already deleted org"
 
     illu_db.create_org(name)
@@ -62,12 +76,20 @@ def test_delete_deleted_org():
 
 
 class CommonUserData:
+    """
+    common user data for user tests
+    """
+
     phone_prefix: str
     phone: str
     user_name: str
     pw_hash: str
 
     def __init__(self, user_name):
+        """
+        user_name:
+            the name of the user
+        """
         self.phone_prefix = "+1"
         self.phone = "1234567"
         self.user_name = user_name
@@ -77,6 +99,16 @@ class CommonUserData:
 def check_created_user(
     success: bool, user_data: CommonUserData, created_user_data: Dict[str, Any]
 ):
+    """
+    Check whether the user creation succeeded. Asserts on failure
+
+    success:
+        The boolean returned from create_user
+    user_data:
+        The user data used for creation
+    created_user_data:
+        The user data returned from create_user
+    """
     assert success
     assert not (created_user_data["id"] is None)
     assert created_user_data["phone_prefix"] == user_data.phone_prefix
@@ -85,6 +117,9 @@ def check_created_user(
 
 
 def test_create_user():
+    """
+    tests creating a user
+    """
     user_data: CommonUserData = CommonUserData("test create user")
 
     try:
@@ -102,6 +137,10 @@ def test_create_user():
 
 
 def test_create_created_user():
+    """
+    Tests creating an already created user
+    The second create call should fail
+    """
     user_data: CommonUserData = CommonUserData("test create created user")
 
     try:
@@ -127,6 +166,10 @@ def test_create_created_user():
 
 
 def test_create_user_jwt():
+    """
+    Tests creating a user with the optional jwt parameter
+    """
+    # TODO: check that jwt token is in the user data
     user_data: CommonUserData = CommonUserData("test create user with jwt")
 
     try:
@@ -145,6 +188,9 @@ def test_create_user_jwt():
 
 
 def test_create_user_org_id():
+    """
+    Tests creating a user with the optional org data
+    """
     user_data: CommonUserData = CommonUserData("test create user with org_id")
 
     org_name: str = "create user with org id org"
@@ -172,6 +218,9 @@ def test_create_user_org_id():
 
 
 def test_delete_user():
+    """
+    Test deleting a user
+    """
     user_data = CommonUserData("test delete user")
 
     success: bool
@@ -188,6 +237,9 @@ def test_delete_user():
 
 
 def test_delete_deleted_user():
+    """
+    Test deleting an already deleted user
+    """
     user_data = CommonUserData("test delete deleted user")
 
     success: bool

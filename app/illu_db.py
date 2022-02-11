@@ -9,6 +9,13 @@ DB: Optional[Postgres] = None
 
 
 def init_db() -> Postgres:
+    """
+    Checks if the database is initialized and initializes it if it hasn't been
+    Use this at the start of each of your db queries
+
+    returns:
+        Postgres db instance
+    """
     global DB
 
     if DB is None:
@@ -19,12 +26,14 @@ def init_db() -> Postgres:
 
 def create_org(name: str) -> Tuple[bool, Dict[str, Any]]:
     """
+    creates an organization
+
     name:
         The name of org to create
 
     returns:
         Tuple containing...
-        boolean indicating success or failure of insertion and selection
+        boolean indicating success or failure of insertion and selection transaction
         dictionary containing org column names and values
     """
     db: Postgres = init_db()
@@ -51,8 +60,13 @@ def create_org(name: str) -> Tuple[bool, Dict[str, Any]]:
 
 def delete_org(name: str) -> bool:
     """
+    deletes and organization
+
     name:
         The name of the org to delete
+
+    returns:
+        boolean indicating whether the deletion succeeded
     """
 
     db: Postgres = init_db()
@@ -77,6 +91,8 @@ def create_user(
     org_id: Optional[int] = None,
 ) -> Tuple[bool, Dict[str, Any]]:
     """
+    creates a user
+
     phone_prefix:
         The phone number country code
 
@@ -94,6 +110,11 @@ def create_user(
 
     org_id:
         the organization that the user is a member of
+
+    returns:
+        Tuple containing...
+        boolean indicating the success of the insert and select transaction
+        Dictionary containing most of the user data, excluding some secrets
     """
 
     db: Postgres = init_db()
@@ -144,6 +165,17 @@ def create_user(
 
 
 def delete_user(phone_prefix: str, phone: str) -> bool:
+    """
+    deletes a user
+
+    phone_prefix:
+        The user's phone number country code
+    phone:
+        The user's phone number
+
+    returns:
+        boolean indicating the success or failure of the deletion
+    """
     db: Postgres = init_db()
 
     success: bool = False
