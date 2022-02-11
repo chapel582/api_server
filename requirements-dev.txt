@@ -3,3 +3,4 @@ black
 flake8
 mypy
 pytest
+types-psycopg2==2.9.6

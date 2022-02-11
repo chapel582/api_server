@@ -1,6 +1,7 @@
 import os
 from typing import Any, Dict, Optional, Tuple
 
+from psycopg2.errors import UniqueViolation
 from postgres import Postgres
 from dotenv import load_dotenv
 
@@ -29,16 +30,19 @@ def create_org(name: str) -> Tuple[bool, Dict[str, Any]]:
     success: bool = False
     result: Dict[str, Any] = {}
     with db.get_cursor() as cursor:
-        cursor.run(
-            "INSERT INTO my_schema.organization(org_name) VALUES(%(org_name)s)",
-            org_name=name,
-        )
-        result = cursor.one(
-            "SELECT * FROM my_schema.organization WHERE org_name=%(org_name)s",
-            org_name=name,
-            back_as=dict,
-        )
-        success = True
+        try:
+            cursor.run(
+                "INSERT INTO my_schema.organization(org_name) VALUES(%(org_name)s)",
+                org_name=name,
+            )
+            result = cursor.one(
+                "SELECT * FROM my_schema.organization WHERE org_name=%(org_name)s",
+                org_name=name,
+                back_as=dict,
+            )
+            success = True
+        except UniqueViolation:
+            pass
 
     return success, result
 

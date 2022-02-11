@@ -14,9 +14,14 @@ repos:
     -   id: mypy
         args: []
         additional_dependencies: [
+            # server packages
             fastapi==0.71.0,
             uvicorn==0.16.0,
             pydantic==1.9.0,
             python-dotenv==0.19.2,
-            postgres==4.0
+            postgres==4.0,
+            psycopg2==2.9.3,
+            
+            # type stubs below
+            types-psycopg2==2.9.6
         ]
