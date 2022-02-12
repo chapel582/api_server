@@ -217,6 +217,41 @@ def test_create_user_org_id():
         illu_db.delete_org(org_name)
 
 
+# def test_get_user_id():
+
+# def test_update_user_no_fields():
+#     pass
+
+# def test_update_user_one_field():
+#     user_data: CommonUserData = CommonUserData("test create user")
+
+#     try:
+#         org_created: bool
+#         org_data: Dict[str, Any]
+#         org_created, org_data = illu_db.create_org(org_name)
+#         assert org_created
+
+#         success: bool
+#         result: Dict[str, Any]
+#         success, result = illu_db.create_user(
+#             phone_prefix=user_data.phone_prefix,
+#             phone=user_data.phone,
+#             user_name=user_data.user_name,
+#             pw_hash=user_data.pw_hash,
+#         )
+#         check_created_user(success, user_data, result)
+
+#         illu_db.update_user(phone_prefix=user_data.phone_prefix, phone=user_data.phone, org_id=org_data['id'])
+#     finally:
+#         illu_db.delete_user(user_data.phone_prefix, user_data.phone)
+
+# def test_update_user_two_fields():
+#     pass
+
+# def test_update_user_all_fields():
+#     pass
+
+
 def test_delete_user():
     """
     Test deleting a user
