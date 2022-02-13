@@ -1,7 +1,7 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from db_org import create_org, delete_org
-from db_user import create_user, delete_user
+from db_user import create_user, get_user, delete_user
 
 
 class CommonUserData:
@@ -146,7 +146,30 @@ def test_create_user_org_id() -> None:
         delete_org(org_name)
 
 
-# def test_get_user_id():
+def test_get_user_id() -> None:
+    """
+    test get user by id
+    """
+    user_data: CommonUserData = CommonUserData("test create user with org_id")
+
+    try:
+        user_created: bool
+        created_user_data: Dict[str, Any]
+        user_created, created_user_data = create_user(
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+        )
+        check_created_user(user_created, user_data, created_user_data)
+
+        get_user_data_check: List[Dict[str, Any]]
+        success, get_user_data_check = get_user(user_id=created_user_data["id"])
+        assert success
+        assert get_user_data_check[0] == created_user_data
+    finally:
+        delete_user(user_data.phone_prefix, user_data.phone)
+
 
 # def test_update_user_no_fields():
 #     pass

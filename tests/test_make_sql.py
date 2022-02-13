@@ -4,7 +4,9 @@ from make_sql import make_where_sql_col, make_where_sql, make_update_sql, SqlPar
 
 
 def test_make_where_sql_col_empty_and() -> None:
-    """ """
+    """
+    test the make_where_sql_col function with no parameters and the 'AND' operator
+    """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = []
 
@@ -14,7 +16,9 @@ def test_make_where_sql_col_empty_and() -> None:
 
 
 def test_make_where_sql_col_empty_or() -> None:
-    """ """
+    """
+    test the make_where_sql_col function with no parameters and the 'OR' operator
+    """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = []
 
@@ -24,7 +28,9 @@ def test_make_where_sql_col_empty_or() -> None:
 
 
 def test_make_where_sql_col_one() -> None:
-    """ """
+    """
+    test the make_where_sql_col with a single expression and the 'AND' operator
+    """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = [
         SqlParam(param_key="old_test", col_name="test", value=55)
@@ -36,7 +42,9 @@ def test_make_where_sql_col_one() -> None:
 
 
 def test_make_where_sql_col_one_or() -> None:
-    """ """
+    """
+    test make_where_sql_col with a single expression and the 'OR' operator
+    """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = [
         SqlParam(param_key="old_test", col_name="test", value=55)
@@ -171,3 +179,50 @@ def test_make_update_sql_no_where() -> None:
         result == "UPDATE my_schema.table SET column1=%(column1)s, column2=%(column2)s"
     )
     assert param_dict == {"column1": "value", "column2": 55}
+
+
+def test_make_update_sql_no_where_nones() -> None:
+    """
+    Test make_update_sql when there are where entries, but they are all none
+    """
+    param_dict: Dict[str, Any] = {}
+    update_args: List[SqlParam] = [
+        SqlParam(col_name="column1", value="value"),
+        SqlParam(col_name="column2", value=55),
+    ]
+    where_args: List[SqlParam] = [
+        SqlParam(col_name="column1", value=None, param_key="old_column1")
+    ]
+
+    result: str = make_update_sql(
+        param_dict, "my_schema.table", update_args, where_args, "AND"
+    )
+    assert (
+        result == "UPDATE my_schema.table SET column1=%(column1)s, column2=%(column2)s"
+    )
+    assert param_dict == {"column1": "value", "column2": 55}
+
+
+def test_make_update_sql_no_where_mixed_nones() -> None:
+    """
+    Test make_update_sql when there are where entries, but some are none
+    """
+    param_dict: Dict[str, Any] = {}
+    update_args: List[SqlParam] = [
+        SqlParam(col_name="column1", value="value"),
+        SqlParam(col_name="column2", value=55),
+    ]
+    where_args: List[SqlParam] = [
+        SqlParam(col_name="column1", value=None, param_key="old_column1"),
+        SqlParam(col_name="column2", value=56, param_key="old_column2"),
+        SqlParam(col_name="column3", value=None, param_key="old_column3"),
+    ]
+
+    result: str = make_update_sql(
+        param_dict, "my_schema.table", update_args, where_args, "AND"
+    )
+    assert (
+        result
+        == "UPDATE my_schema.table SET column1=%(column1)s, column2=%(column2)s WHERE column2=%(old_column2)s"
+    )
+    assert param_dict == {"column1": "value", "column2": 55, "old_column2": 56}

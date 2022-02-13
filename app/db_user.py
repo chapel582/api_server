@@ -104,7 +104,7 @@ def get_user(
     db: Postgres = init_db()
 
     params = {
-        "user_id": user_id,
+        "id": user_id,
         "phone_prefix": phone_prefix,
         "phone": phone,
         "user_name": user_name,

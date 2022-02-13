@@ -22,19 +22,37 @@ def make_where_sql_col(
     where_args: List[SqlParam],
     where_operator: BOOL_OPERATOR,
 ) -> str:
-    """ """
+    """
+    make a where expression for sql
+
+    param_dict:
+    The mutable param_dict that will be passed into the db 'run' function
+
+    where_args:
+    the column, value pairs for the expressions
+
+    where_operator:
+    the boolean operator between the expressions
+
+    returns:
+    string of the where expression
+    """
     result = ""
     if len(where_args) > 0:
-        result += "WHERE "
-        for index in range(len(where_args) - 1):
-            arg = where_args[index]
+        # NOTE: remove None valued where args first
+        valid_where_args: List[SqlParam] = []
+        for arg in where_args:
             if not (arg.value is None):
-                result += f"{arg.col_name}=%({arg.param_key})s {where_operator} "
+                valid_where_args.append(arg)
                 param_dict[arg.param_key] = arg.value
 
-        arg = where_args[len(where_args) - 1]
-        result += f"{arg.col_name}=%({arg.param_key})s"
-        param_dict[arg.param_key] = arg.value
+        if len(valid_where_args) > 0:
+            result += "WHERE "
+            for index in range(len(valid_where_args) - 1):
+                arg = valid_where_args[index]
+                result += f"{arg.col_name}=%({arg.param_key})s {where_operator} "
+            arg = valid_where_args[-1]
+            result += f"{arg.col_name}=%({arg.param_key})s"
 
     return result
 
@@ -54,23 +72,37 @@ def make_update_sql(
     where_args: List[SqlParam],
     where_operator: BOOL_OPERATOR,
 ) -> str:
-    """ """
+    """
+    param_dict:
+    table_name:
+    update_args:
+    where_args:
+    where_operator:
+    returns:
+    """
     result: str = ""
     if len(update_args) > 0:
-        result += f"UPDATE {table_name} SET "
-
-        for index in range(len(update_args) - 1):
-            arg = update_args[index]
+        # NOTE: remove the None valued where args first so we don't prepend string unnecessarily
+        valid_update_args: List[SqlParam] = []
+        for arg in update_args:
             if not (arg.value is None):
-                result += f"{arg.col_name}=%({arg.param_key})s, "
+                valid_update_args.append(arg)
                 param_dict[arg.param_key] = arg.value
 
-        arg = update_args[len(update_args) - 1]
-        result += f"{arg.col_name}=%({arg.param_key})s"
-        param_dict[arg.param_key] = arg.value
+        if len(valid_update_args) > 0:
+            result += f"UPDATE {table_name} SET "
 
-        if len(where_args) > 0:
-            result += " "
-            result += make_where_sql_col(param_dict, where_args, where_operator)
+            for index in range(len(valid_update_args) - 1):
+                arg = valid_update_args[index]
+                result += f"{arg.col_name}=%({arg.param_key})s, "
+            arg = valid_update_args[-1]
+            result += f"{arg.col_name}=%({arg.param_key})s"
+
+            if len(where_args) > 0:
+                where_string: str = make_where_sql_col(
+                    param_dict, where_args, where_operator
+                )
+                if len(where_string) != 0:
+                    result += " " + where_string
 
     return result
