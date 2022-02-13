@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-from illu_sql import make_where_sql_col, make_where_sql, make_update_sql, SqlParam
+from make_sql import make_where_sql_col, make_where_sql, make_update_sql, SqlParam
 
 
 def test_make_where_sql_col_empty_and():
