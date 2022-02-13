@@ -163,6 +163,53 @@ def test_make_update_sql_multiple() -> None:
     }
 
 
+def test_make_update_sql_none_args() -> None:
+    """ """
+    param_dict: Dict[str, Any] = {}
+    update_args: List[SqlParam] = [
+        SqlParam(col_name="column1", value="value", param_key="new_column1"),
+        SqlParam(col_name="column2", value=None),
+    ]
+    where_args: List[SqlParam] = [
+        SqlParam(col_name="column1", value="oldvalue", param_key="old_column1")
+    ]
+
+    result: str = make_update_sql(
+        param_dict, "my_schema.table", update_args, where_args, "AND"
+    )
+    assert (
+        result
+        == "UPDATE my_schema.table SET column1=%(new_column1)s WHERE column1=%(old_column1)s"
+    )
+    assert param_dict == {"old_column1": "oldvalue", "new_column1": "value"}
+
+
+def test_make_update_sql_mixed_none_args() -> None:
+    """ """
+    param_dict: Dict[str, Any] = {}
+    update_args: List[SqlParam] = [
+        SqlParam(col_name="column1", value="value", param_key="new_column1"),
+        SqlParam(col_name="column2", value=None),
+        SqlParam(col_name="column3", value=32),
+    ]
+    where_args: List[SqlParam] = [
+        SqlParam(col_name="column1", value="oldvalue", param_key="old_column1")
+    ]
+
+    result: str = make_update_sql(
+        param_dict, "my_schema.table", update_args, where_args, "AND"
+    )
+    assert (
+        result
+        == "UPDATE my_schema.table SET column1=%(new_column1)s, column3=%(column3)s WHERE column1=%(old_column1)s"
+    )
+    assert param_dict == {
+        "old_column1": "oldvalue",
+        "new_column1": "value",
+        "column3": 32,
+    }
+
+
 def test_make_update_sql_no_where() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
@@ -203,7 +250,7 @@ def test_make_update_sql_no_where_nones() -> None:
     assert param_dict == {"column1": "value", "column2": 55}
 
 
-def test_make_update_sql_no_where_mixed_nones() -> None:
+def test_make_update_sql_where_mixed_nones() -> None:
     """
     Test make_update_sql when there are where entries, but some are none
     """
