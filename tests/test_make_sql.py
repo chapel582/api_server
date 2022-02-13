@@ -3,7 +3,7 @@ from typing import Any, Dict, List
 from make_sql import make_where_sql_col, make_where_sql, make_update_sql, SqlParam
 
 
-def test_make_where_sql_col_empty_and():
+def test_make_where_sql_col_empty_and() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = []
@@ -13,7 +13,7 @@ def test_make_where_sql_col_empty_and():
     assert param_dict == {}
 
 
-def test_make_where_sql_col_empty_or():
+def test_make_where_sql_col_empty_or() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = []
@@ -23,7 +23,7 @@ def test_make_where_sql_col_empty_or():
     assert param_dict == {}
 
 
-def test_make_where_sql_col_one():
+def test_make_where_sql_col_one() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = [
@@ -35,7 +35,7 @@ def test_make_where_sql_col_one():
     assert param_dict == {"old_test": 55}
 
 
-def test_make_where_sql_col_one_or():
+def test_make_where_sql_col_one_or() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = [
@@ -47,7 +47,7 @@ def test_make_where_sql_col_one_or():
     assert param_dict == {"old_test": 55}
 
 
-def test_make_where_sql_col_multiple():
+def test_make_where_sql_col_multiple() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = [
@@ -60,7 +60,7 @@ def test_make_where_sql_col_multiple():
     assert param_dict == {"old_test": 55, "old_test_2": "string"}
 
 
-def test_make_where_sql_col_multiple_or():
+def test_make_where_sql_col_multiple_or() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     where_args: List[SqlParam] = [
@@ -73,7 +73,7 @@ def test_make_where_sql_col_multiple_or():
     assert param_dict == {"old_test": 55, "old_test_2": "string"}
 
 
-def test_make_where_sql_empty():
+def test_make_where_sql_empty() -> None:
     """ """
     where_dict: Dict[str, Any] = {}
 
@@ -81,7 +81,7 @@ def test_make_where_sql_empty():
     assert result == ""
 
 
-def test_make_where_sql_one():
+def test_make_where_sql_one() -> None:
     """ """
     where_dict: Dict[str, Any] = {"test": 55}
 
@@ -89,7 +89,7 @@ def test_make_where_sql_one():
     assert result == "WHERE test=%(test)s"
 
 
-def test_make_where_sql_multiple():
+def test_make_where_sql_multiple() -> None:
     """ """
     where_dict: Dict[str, Any] = {"test": 55, "test2": "string"}
 
@@ -97,7 +97,7 @@ def test_make_where_sql_multiple():
     assert result == "WHERE test=%(test)s AND test2=%(test2)s"
 
 
-def test_make_update_sql_empty():
+def test_make_update_sql_empty() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     update_args: List[SqlParam] = []
@@ -110,7 +110,7 @@ def test_make_update_sql_empty():
     assert param_dict == {}
 
 
-def test_make_update_sql_one():
+def test_make_update_sql_one() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     update_args: List[SqlParam] = [
@@ -130,7 +130,7 @@ def test_make_update_sql_one():
     assert param_dict == {"column1": "oldvalue", "new_column1": "value"}
 
 
-def test_make_update_sql_multiple():
+def test_make_update_sql_multiple() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     update_args: List[SqlParam] = [
@@ -155,7 +155,7 @@ def test_make_update_sql_multiple():
     }
 
 
-def test_make_update_sql_no_where():
+def test_make_update_sql_no_where() -> None:
     """ """
     param_dict: Dict[str, Any] = {}
     update_args: List[SqlParam] = [

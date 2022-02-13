@@ -27,7 +27,7 @@ class CommonUserData:
 
 def check_created_user(
     success: bool, user_data: CommonUserData, created_user_data: Dict[str, Any]
-):
+) -> None:
     """
     Check whether the user creation succeeded. Asserts on failure
 
@@ -45,7 +45,7 @@ def check_created_user(
     assert created_user_data["user_name"] == user_data.user_name
 
 
-def test_create_user():
+def test_create_user() -> None:
     """
     tests creating a user
     """
@@ -65,7 +65,7 @@ def test_create_user():
         delete_user(user_data.phone_prefix, user_data.phone)
 
 
-def test_create_created_user():
+def test_create_created_user() -> None:
     """
     Tests creating an already created user
     The second create call should fail
@@ -94,7 +94,7 @@ def test_create_created_user():
         delete_user(user_data.phone_prefix, user_data.phone)
 
 
-def test_create_user_jwt():
+def test_create_user_jwt() -> None:
     """
     Tests creating a user with the optional jwt parameter
     """
@@ -116,7 +116,7 @@ def test_create_user_jwt():
         delete_user(user_data.phone_prefix, user_data.phone)
 
 
-def test_create_user_org_id():
+def test_create_user_org_id() -> None:
     """
     Tests creating a user with the optional org data
     """
@@ -130,7 +130,7 @@ def test_create_user_org_id():
         assert org_created
 
         user_created: bool
-        user_data: Dict[str, Any]
+        created_user_data: Dict[str, Any]
         user_created, created_user_data = create_user(
             phone_prefix=user_data.phone_prefix,
             phone=user_data.phone,
@@ -181,7 +181,7 @@ def test_create_user_org_id():
 #     pass
 
 
-def test_delete_user():
+def test_delete_user() -> None:
     """
     Test deleting a user
     """
@@ -200,7 +200,7 @@ def test_delete_user():
     assert success
 
 
-def test_delete_deleted_user():
+def test_delete_deleted_user() -> None:
     """
     Test deleting an already deleted user
     """

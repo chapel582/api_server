@@ -3,7 +3,7 @@ from typing import Any, Dict
 from db_org import create_org, delete_org
 
 
-def test_create_org():
+def test_create_org() -> None:
     """
     tests creating a new organization
     """
@@ -19,7 +19,7 @@ def test_create_org():
         delete_org(name)
 
 
-def test_create_created_org():
+def test_create_created_org() -> None:
     """
     tests creating an org that is already created.
     The second creation should fail.
@@ -40,7 +40,7 @@ def test_create_created_org():
         delete_org(name)
 
 
-def test_delete_org():
+def test_delete_org() -> None:
     """
     tests deleting an existing org
     """
@@ -55,7 +55,7 @@ def test_delete_org():
     assert success
 
 
-def test_delete_deleted_org():
+def test_delete_deleted_org() -> None:
     """
     tests deleting an already deleted organization
     The second deletion should effectively be a no op
@@ -67,5 +67,5 @@ def test_delete_deleted_org():
     success: bool = delete_org(name)
     assert success
 
-    success: bool = delete_org(name)
+    success = delete_org(name)
     assert success
