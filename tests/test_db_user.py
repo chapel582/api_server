@@ -235,7 +235,7 @@ def test_update_user_one_field() -> None:
         delete_user(user_data.phone_prefix, user_data.phone)
 
 
-def test_update_user_two_fields():
+def test_update_user_two_fields() -> None:
     user_data: CommonUserData = CommonUserData(
         "test update user function with two arguments"
     )
@@ -281,8 +281,81 @@ def test_update_user_two_fields():
         delete_org(org_name)
 
 
-# def test_update_user_all_fields():
-#     pass
+def test_update_user_phone() -> None:
+    user_data: CommonUserData = CommonUserData(
+        "test update user function with phone argument"
+    )
+
+    try:
+        user_created: bool
+        created_user_data: Dict[str, Any]
+        user_created, created_user_data = create_user(
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+        )
+        check_created_user(user_created, user_data, created_user_data)
+
+        new_phone: str = "0000000"
+        assert new_phone != user_data.phone
+        user_updated: bool
+        user_updated = update_user(
+            user_data.phone_prefix, user_data.phone, new_phone=new_phone
+        )
+        assert user_updated
+
+        expected_user_data: Dict[str, Any] = created_user_data.copy()
+        expected_user_data["phone"] = new_phone
+
+        got_user: bool
+        get_user_data_check: List[Dict[str, Any]]
+        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
+        assert got_user
+        assert get_user_data_check[0] == expected_user_data
+    finally:
+        delete_user(user_data.phone_prefix, user_data.phone)
+
+
+def test_update_user_prefix_and_phone() -> None:
+    user_data: CommonUserData = CommonUserData(
+        "test update user function with phone argument"
+    )
+
+    try:
+        user_created: bool
+        created_user_data: Dict[str, Any]
+        user_created, created_user_data = create_user(
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+        )
+        check_created_user(user_created, user_data, created_user_data)
+
+        new_phone: str = "0000000"
+        new_prefix: str = "+009"
+        assert new_phone != user_data.phone
+        user_updated: bool
+        user_updated = update_user(
+            user_data.phone_prefix,
+            user_data.phone,
+            new_phone=new_phone,
+            new_phone_prefix=new_prefix,
+        )
+        assert user_updated
+
+        expected_user_data: Dict[str, Any] = created_user_data.copy()
+        expected_user_data["phone"] = new_phone
+        expected_user_data["phone_prefix"] = new_prefix
+
+        got_user: bool
+        get_user_data_check: List[Dict[str, Any]]
+        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
+        assert got_user
+        assert get_user_data_check[0] == expected_user_data
+    finally:
+        delete_user(user_data.phone_prefix, user_data.phone)
 
 
 def test_delete_user() -> None:
