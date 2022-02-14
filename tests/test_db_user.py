@@ -146,6 +146,14 @@ def test_create_user_org_id() -> None:
         delete_org(org_name)
 
 
+def check_get_user_by_id(user_id: int, expected_user_data: Dict[str, Any]) -> None:
+    users: List[Dict[str, Any]]
+    success, users = get_user(user_id=user_id)
+    assert success
+    assert len(users) == 1
+    assert users[0] == expected_user_data
+
+
 def test_get_user_id() -> None:
     """
     test get user by id
@@ -163,10 +171,7 @@ def test_get_user_id() -> None:
         )
         check_created_user(user_created, user_data, created_user_data)
 
-        get_user_data_check: List[Dict[str, Any]]
-        success, get_user_data_check = get_user(user_id=created_user_data["id"])
-        assert success
-        assert get_user_data_check[0] == created_user_data
+        check_get_user_by_id(created_user_data["id"], created_user_data)
     finally:
         delete_user(user_data.phone_prefix, user_data.phone)
 
@@ -191,11 +196,7 @@ def test_update_user_no_fields() -> None:
         user_updated = update_user(user_data.phone_prefix, user_data.phone)
         assert user_updated
 
-        got_user: bool
-        get_user_data_check: List[Dict[str, Any]]
-        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
-        assert got_user
-        assert get_user_data_check[0] == created_user_data
+        check_get_user_by_id(created_user_data["id"], created_user_data)
     finally:
         delete_user(user_data.phone_prefix, user_data.phone)
 
@@ -226,11 +227,7 @@ def test_update_user_one_field() -> None:
         expected_user_data: Dict[str, Any] = created_user_data.copy()
         expected_user_data["user_name"] = new_user_name
 
-        got_user: bool
-        get_user_data_check: List[Dict[str, Any]]
-        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
-        assert got_user
-        assert get_user_data_check[0] == expected_user_data
+        check_get_user_by_id(created_user_data["id"], expected_user_data)
     finally:
         delete_user(user_data.phone_prefix, user_data.phone)
 
@@ -271,11 +268,7 @@ def test_update_user_two_fields() -> None:
         expected_user_data["user_name"] = new_user_name
         expected_user_data["org_id"] = org_data["id"]
 
-        got_user: bool
-        get_user_data_check: List[Dict[str, Any]]
-        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
-        assert got_user
-        assert get_user_data_check[0] == expected_user_data
+        check_get_user_by_id(created_user_data["id"], expected_user_data)
     finally:
         delete_user(user_data.phone_prefix, user_data.phone)
         delete_org(org_name)
@@ -308,11 +301,7 @@ def test_update_user_phone() -> None:
         expected_user_data: Dict[str, Any] = created_user_data.copy()
         expected_user_data["phone"] = new_phone
 
-        got_user: bool
-        get_user_data_check: List[Dict[str, Any]]
-        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
-        assert got_user
-        assert get_user_data_check[0] == expected_user_data
+        check_get_user_by_id(created_user_data["id"], expected_user_data)
     finally:
         delete_user(user_data.phone_prefix, user_data.phone)
         delete_user(user_data.phone_prefix, new_phone)
@@ -351,11 +340,7 @@ def test_update_user_prefix_and_phone() -> None:
         expected_user_data["phone"] = new_phone
         expected_user_data["phone_prefix"] = new_prefix
 
-        got_user: bool
-        get_user_data_check: List[Dict[str, Any]]
-        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
-        assert got_user
-        assert get_user_data_check[0] == expected_user_data
+        check_get_user_by_id(created_user_data["id"], expected_user_data)
     finally:
         delete_user(user_data.phone_prefix, user_data.phone)
         delete_user(new_prefix, new_phone)
@@ -411,11 +396,7 @@ def test_update_user_all_args() -> None:
         expected_user_data["user_name"] = new_user_name
         expected_user_data["org_id"] = org_data["id"]
 
-        got_user: bool
-        get_user_data_check: List[Dict[str, Any]]
-        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
-        assert got_user
-        assert get_user_data_check[0] == expected_user_data
+        check_get_user_by_id(created_user_data["id"], expected_user_data)
     finally:
         delete_user(user_data.phone_prefix, user_data.phone)
         delete_user(new_prefix, new_phone)
@@ -439,6 +420,7 @@ def test_delete_user() -> None:
 
     success = delete_user(user_data.phone_prefix, user_data.phone)
     assert success
+    # TODO: check that user is gone and can no longer be queried
 
 
 def test_delete_deleted_user() -> None:

@@ -3,18 +3,24 @@ from typing import Any, Dict
 from db_org import create_org, delete_org
 
 
+def create_and_check_org(org_name: str) -> Dict[str, Any]:
+    org_created: bool
+    org_data: Dict[str, Any]
+    org_created, org_data = create_org(org_name)
+
+    assert org_created
+    assert org_data["org_name"] == org_name
+
+    return org_data
+
+
 def test_create_org() -> None:
     """
     tests creating a new organization
     """
     name: str = "test create org"
     try:
-        success: bool
-        result: Dict[str, Any]
-        success, result = create_org(name)
-
-        assert success
-        assert result["org_name"] == name
+        create_and_check_org(name)
     finally:
         delete_org(name)
 
@@ -26,12 +32,7 @@ def test_create_created_org() -> None:
     """
     name: str = "test already exist org"
     try:
-        success: bool
-        result: Dict[str, Any]
-        success, result = create_org(name)
-
-        assert success
-        assert result["org_name"] == name
+        create_and_check_org(name)
 
         success, result = create_org(name)
         assert not success
@@ -46,13 +47,12 @@ def test_delete_org() -> None:
     """
     name: str = "test delete org"
 
-    success: bool = False
-    success, _ = create_org(name)
+    create_and_check_org(name)
+
+    success: bool = delete_org(name)
     assert success
 
-    success = delete_org(name)
-
-    assert success
+    # TODO: actually check that the org is gone and can no longer be accessed
 
 
 def test_delete_deleted_org() -> None:
@@ -62,7 +62,7 @@ def test_delete_deleted_org() -> None:
     """
     name: str = "test already deleted org"
 
-    create_org(name)
+    create_and_check_org(name)
 
     success: bool = delete_org(name)
     assert success

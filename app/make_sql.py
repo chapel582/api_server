@@ -58,7 +58,15 @@ def make_where_sql_col(
 
 
 def make_where_sql(where_dict: Dict[str, Any], where_operator: BOOL_OPERATOR):
-    """ """
+    """
+    A convenience function for creating a where expression for SQL without needing to
+    make a list of SqlParam
+
+    where_dict:
+
+    where_operator:
+        operator to use between the expressions
+    """
     where_args: List[SqlParam] = []
     for key, value in where_dict.items():
         where_args.append(SqlParam(param_key=key, col_name=key, value=value))
@@ -73,12 +81,25 @@ def make_update_sql(
     where_operator: BOOL_OPERATOR,
 ) -> str:
     """
+    Create a string to use with update sql
+
     param_dict:
+    The mutable param_dict that will be passed into the db 'run' function
+
     table_name:
+    the name of the table that contains the rows for updating
+
     update_args:
+    the columns to update
+
     where_args:
+    the columns to condition on
+
     where_operator:
+    how to join the where arguments (e.g. 'AND' or 'OR')
+
     returns:
+    the full SQL update string. will be empty if update_args is empty or full of None-valued params
     """
     result: str = ""
     if len(update_args) > 0:

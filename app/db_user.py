@@ -6,6 +6,7 @@ from psycopg2.errors import UniqueViolation
 from illu_db import init_db
 from make_sql import make_where_sql, make_update_sql, SqlParam
 
+# NOTE: SELECT_USER is a common way to access and return the non-secret parts of the user data
 SELECT_USER: str = (
     "SELECT id, phone_prefix, phone, user_name, org_id FROM my_schema.illu_user "
 )
@@ -54,9 +55,10 @@ def create_user(
         try:
             cursor.run(
                 """
-                    INSERT INTO my_schema.illu_user(
-                        phone_prefix, phone, user_name, pw_hash, jwt, org_id
-                    )
+                    INSERT INTO
+                        my_schema.illu_user(
+                            phone_prefix, phone, user_name, pw_hash, jwt, org_id
+                        )
                     VALUES(
                         %(phone_prefix)s,
                         %(phone)s,
