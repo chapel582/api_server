@@ -154,7 +154,6 @@ def update_user(
         the organization that the user is a member of
 
     returns:
-        Tuple containing...
         boolean indicating the success of the insert and select transaction
     """
 
