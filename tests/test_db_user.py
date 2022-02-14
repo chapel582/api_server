@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 
 from db_org import create_org, delete_org
-from db_user import create_user, get_user, delete_user
+from db_user import create_user, get_user, update_user, delete_user
 
 
 class CommonUserData:
@@ -171,31 +171,69 @@ def test_get_user_id() -> None:
         delete_user(user_data.phone_prefix, user_data.phone)
 
 
-# def test_update_user_no_fields():
-#     pass
+def test_update_user_no_fields() -> None:
+    user_data: CommonUserData = CommonUserData(
+        "test update user function without any arguments"
+    )
 
-# def test_update_user_one_field():
-#     user_data: CommonUserData = CommonUserData("test create user")
+    try:
+        user_created: bool
+        created_user_data: Dict[str, Any]
+        user_created, created_user_data = create_user(
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+        )
+        check_created_user(user_created, user_data, created_user_data)
 
-#     try:
-#         org_created: bool
-#         org_data: Dict[str, Any]
-#         org_created, org_data = create_org(org_name)
-#         assert org_created
+        user_updated: bool
+        user_updated = update_user(user_data.phone_prefix, user_data.phone)
+        assert user_updated
 
-#         success: bool
-#         result: Dict[str, Any]
-#         success, result = create_user(
-#             phone_prefix=user_data.phone_prefix,
-#             phone=user_data.phone,
-#             user_name=user_data.user_name,
-#             pw_hash=user_data.pw_hash,
-#         )
-#         check_created_user(success, user_data, result)
+        got_user: bool
+        get_user_data_check: List[Dict[str, Any]]
+        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
+        assert got_user
+        assert get_user_data_check[0] == created_user_data
+    finally:
+        delete_user(user_data.phone_prefix, user_data.phone)
 
-#         update_user(phone_prefix=user_data.phone_prefix, phone=user_data.phone, org_id=org_data['id'])
-#     finally:
-#         delete_user(user_data.phone_prefix, user_data.phone)
+
+def test_update_user_one_field() -> None:
+    user_data: CommonUserData = CommonUserData(
+        "test update user function without any arguments"
+    )
+
+    try:
+        user_created: bool
+        created_user_data: Dict[str, Any]
+        user_created, created_user_data = create_user(
+            phone_prefix=user_data.phone_prefix,
+            phone=user_data.phone,
+            user_name=user_data.user_name,
+            pw_hash=user_data.pw_hash,
+        )
+        check_created_user(user_created, user_data, created_user_data)
+
+        new_user_name: str = "new_user_name"
+        user_updated: bool
+        user_updated = update_user(
+            user_data.phone_prefix, user_data.phone, user_name=new_user_name
+        )
+        assert user_updated
+
+        expected_user_data: Dict[str, Any] = created_user_data.copy()
+        expected_user_data["user_name"] = new_user_name
+
+        got_user: bool
+        get_user_data_check: List[Dict[str, Any]]
+        got_user, get_user_data_check = get_user(user_id=created_user_data["id"])
+        assert got_user
+        assert get_user_data_check[0] == expected_user_data
+    finally:
+        delete_user(user_data.phone_prefix, user_data.phone)
+
 
 # def test_update_user_two_fields():
 #     pass

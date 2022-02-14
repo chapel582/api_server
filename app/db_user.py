@@ -131,7 +131,7 @@ def update_user(
     pw_hash: Optional[str] = None,
     jwt: Optional[str] = None,
     org_id: Optional[int] = None,
-) -> Tuple[bool, Dict[str, Any]]:
+) -> bool:
     """
     creates a user
 
@@ -156,14 +156,12 @@ def update_user(
     returns:
         Tuple containing...
         boolean indicating the success of the insert and select transaction
-        Dictionary containing most of the user data, excluding some secrets
     """
 
     db: Postgres = init_db()
 
     success: bool = False
     param_dict: Dict[str, Any] = {}
-    result: Dict[str, Any] = {}
     with db.get_cursor() as cursor:
         update_args: List[SqlParam] = [
             SqlParam(
@@ -172,7 +170,7 @@ def update_user(
                 param_key="new_phone_prefix",
             ),
             SqlParam(col_name="phone", value=new_phone),
-            SqlParam(col_name="user_name", value="user_name"),
+            SqlParam(col_name="user_name", value=user_name),
             SqlParam(col_name="pw_hash", value=pw_hash),
             SqlParam(col_name="jwt", value=jwt),
             SqlParam(col_name="org_id", value=org_id),
@@ -183,7 +181,7 @@ def update_user(
                 value=phone_prefix,
                 param_key="old_phone_prefix",
             ),
-            SqlParam(col_name="phone", value="phone", param_key="old_phone"),
+            SqlParam(col_name="phone", value=phone, param_key="old_phone"),
         ]
         update_sql: str = make_update_sql(
             param_dict=param_dict,
@@ -192,10 +190,11 @@ def update_user(
             where_args=where_args,
             where_operator="AND",
         )
-        cursor.run(update_sql, param_dict)
+        if len(update_sql) != 0:
+            cursor.run(update_sql, param_dict)
         success = True
 
-    return success, result
+    return success
 
 
 def delete_user(phone_prefix: str, phone: str) -> bool:
